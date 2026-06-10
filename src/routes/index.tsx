@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { sections, siteConfig } from '../data/navData'
+import MacDock from '../components/MacDock'
 
 export const Route = createFileRoute('/')({
   component: HomePage,

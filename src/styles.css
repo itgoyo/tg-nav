@@ -462,3 +462,152 @@ a {
   }
 }
 
+/* macOS Dock 组件（作用域限定） */
+.fam-dock-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.fam-dock-wrap {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.fam-dock-wrap * {
+  box-sizing: border-box;
+}
+
+.fam-dock-wrap .dock {
+  display: flex;
+  align-items: flex-end;
+  padding: 7px 12px;
+  margin: 0;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(48px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(48px) saturate(180%) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.18),
+    0 4px 18px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  overflow: visible;
+  cursor: default;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
+
+.fam-dock-wrap .dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 4px;
+  margin: 0;
+}
+
+.fam-dock-wrap .dock-item a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+}
+
+.fam-dock-wrap .dock-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  will-change: width, height;
+  margin: 0;
+  padding: 0;
+}
+
+.fam-dock-wrap .dock.leaving .dock-icon {
+  transition: width 0.48s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fam-dock-wrap .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+  margin: 4px 0 0;
+  padding: 0;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.fam-dock-wrap .dock-item.running .dot {
+  opacity: 1;
+}
+
+.fam-dock-wrap .tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(28, 28, 30, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #f5f5f7;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+  padding: 5px 11px;
+  margin: 0;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 0.5px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fam-dock-wrap .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(28, 28, 30, 0.9);
+}
+
+.fam-dock-wrap .dock-item:hover .tooltip {
+  opacity: 1;
+}
+
+.fam-dock-wrap .dock-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px 9px;
+  padding: 0;
+  align-self: flex-end;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .fam-dock-fixed {
+    bottom: 16px;
+  }
+
+  .fam-dock-wrap .dock {
+    transform: scale(0.92);
+    transform-origin: center bottom;
+  }
+}
