@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://telegram-nav.pages.dev/sitemap.xml
+Sitemap: https://tg.0xnav.com/sitemap.xml

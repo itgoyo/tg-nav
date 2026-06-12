@@ -9,6 +9,10 @@ import tailwindcss from '@tailwindcss/vite'
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
+  // 👇 这里是新加的，解决域名报错
+  server: {
+    allowedHosts: ['tg.0xnav.com'],
+  },
 })
 
 export default config

@@ -61,14 +61,27 @@ const rightItems: DockItem[] = [
   },
 ]
 
-const BASE = 54
-const MAX = 78
-const RANGE = 200
+type DockMetrics = {
+  base: number
+  max: number
+  range: number
+}
 
-function sizeForDist(dist: number) {
-  if (dist >= RANGE) return BASE
-  const t = (Math.cos((dist / RANGE) * Math.PI) + 1) / 2
-  return BASE + (MAX - BASE) * t
+const getDockMetrics = (): DockMetrics => {
+  if (typeof window === 'undefined') {
+    return { base: 54, max: 78, range: 200 }
+  }
+
+  const vw = window.innerWidth
+  if (vw <= 480) return { base: 40, max: 52, range: 130 }
+  if (vw <= 768) return { base: 46, max: 64, range: 165 }
+  return { base: 54, max: 78, range: 200 }
+}
+
+function sizeForDist(dist: number, metrics: DockMetrics) {
+  if (dist >= metrics.range) return metrics.base
+  const t = (Math.cos((dist / metrics.range) * Math.PI) + 1) / 2
+  return metrics.base + (metrics.max - metrics.base) * t
 }
 
 export default function MacDock() {
@@ -86,11 +99,16 @@ export default function MacDock() {
     let raf: number | null = null
     let active = false
     let leaveTimer: number | null = null
+    let metrics = getDockMetrics()
 
     const setIconSize = (img: HTMLImageElement, size: number) => {
       const px = `${size}px`
       img.style.width = px
       img.style.height = px
+    }
+
+    const resetIconsToBase = () => {
+      icons.forEach((img) => setIconSize(img, metrics.base))
     }
 
     const onEnter = () => {
@@ -110,7 +128,7 @@ export default function MacDock() {
         items.forEach((item, i) => {
           const rect = item.getBoundingClientRect()
           const cx = rect.left + rect.width / 2
-          setIconSize(icons[i], sizeForDist(Math.abs(mx - cx)))
+          setIconSize(icons[i], sizeForDist(Math.abs(mx - cx), metrics))
         })
       })
     }
@@ -119,11 +137,16 @@ export default function MacDock() {
       active = false
       if (raf) cancelAnimationFrame(raf)
       dock.classList.add('leaving')
-      icons.forEach((img) => setIconSize(img, BASE))
+      resetIconsToBase()
       if (leaveTimer) window.clearTimeout(leaveTimer)
       leaveTimer = window.setTimeout(() => {
         dock.classList.remove('leaving')
       }, 500)
+    }
+
+    const onResize = () => {
+      metrics = getDockMetrics()
+      resetIconsToBase()
     }
 
     const onClick = (e: MouseEvent) => {
@@ -145,16 +168,20 @@ export default function MacDock() {
       )
     }
 
+    resetIconsToBase()
+
     dock.addEventListener('mouseenter', onEnter)
     dock.addEventListener('mousemove', onMove)
     dock.addEventListener('mouseleave', onLeave)
     dock.addEventListener('click', onClick)
+    window.addEventListener('resize', onResize)
 
     return () => {
       dock.removeEventListener('mouseenter', onEnter)
       dock.removeEventListener('mousemove', onMove)
       dock.removeEventListener('mouseleave', onLeave)
       dock.removeEventListener('click', onClick)
+      window.removeEventListener('resize', onResize)
       if (raf) cancelAnimationFrame(raf)
       if (leaveTimer) window.clearTimeout(leaveTimer)
     }

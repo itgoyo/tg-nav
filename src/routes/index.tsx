@@ -6,6 +6,32 @@ export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
+const AUTO_COPY_ADDRESSES = new Set([
+  'TGuXv6H1s84cmQZk7akvWHC6P789999999',
+  'TY4etzSftahyH5DYDMq5kDuPs93VVVVVVV',
+])
+
+const getAddressFromUrl = (url: string) => {
+  const match = url.match(/\/address\/([A-Za-z0-9]+)/)
+  return match?.[1] ?? ''
+}
+
+const copyText = async (text: string) => {
+  if (!text) return
+
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+
+  const input = document.createElement('input')
+  input.value = text
+  document.body.appendChild(input)
+  input.select()
+  document.execCommand('copy')
+  document.body.removeChild(input)
+}
+
 function HomePage() {
   return (
     <main className="page-wrap px-4 pb-10 pt-10 sm:pt-12">
@@ -62,17 +88,27 @@ function HomePage() {
                       <td className="px-4 py-3 font-medium whitespace-nowrap">{item.name}</td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-2">
-                          {item.links.map((link) => (
-                            <a
-                              key={`${item.name}-${link.url}`}
-                              href={link.url}
-                              target="_blank"
-                              rel="noreferrer noopener"
-                              className="rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-2.5 py-1 text-xs font-semibold no-underline"
-                            >
-                              {link.label}
-                            </a>
-                          ))}
+                          {item.links.map((link) => {
+                            const address = getAddressFromUrl(link.url)
+                            const shouldAutoCopy = AUTO_COPY_ADDRESSES.has(address)
+
+                            return (
+                              <a
+                                key={`${item.name}-${link.url}`}
+                                href={link.url}
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                onClick={(event) => {
+                                  if (!shouldAutoCopy) return
+                                  copyText(address).catch(() => {})
+                                }}
+                                className="rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] px-2.5 py-1 text-xs font-semibold no-underline"
+                                title={shouldAutoCopy ? '点击时自动复制地址' : undefined}
+                              >
+                                {link.label}
+                              </a>
+                            )
+                          })}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-[var(--sea-ink-soft)]">{item.description}</td>

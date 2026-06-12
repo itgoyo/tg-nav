@@ -24,7 +24,7 @@ export const siteConfig = {
     '收录 Telegram 搜索机器人、推广资源、机场节点推荐与交易所 USDT/空投入口，提供中文用户常用电报导航。',
   keywords:
     'Telegram导航,电报导航,电报搜索机器人,机场推荐,USDT,币安,欧易,Telegram群组',
-  siteUrl: 'https://telegram-nav.pages.dev',
+  siteUrl: 'https://tg.0xnav.com',
 }
 
 export const sections: NavSection[] = [
